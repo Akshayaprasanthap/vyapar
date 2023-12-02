@@ -209,6 +209,10 @@ urlpatterns = [
 
 
     # ===================================== shemeem - end ==================================================
+
+    # =====================================gstr 3B AKSHAYA ===============================================================
+    path('gstr3b',views.gstr3b, name='gstr3b'),
+    path('gstr9',views.gstr9, name='gstr9'),
     
     re_path(r'^static/(?P<path>.*)$', serve,{'document_root': settings.STATIC_ROOT}),
     

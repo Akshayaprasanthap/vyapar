@@ -4684,5 +4684,11 @@ def view_party(request,id):
   allmodules= modules_list.objects.get(company=staff.company,status='New')
   return render(request, 'company/view_party.html',{'staff':staff,'allmodules':allmodules,'Party':Party,'getparty':getparty})
 
+#====================================akshaya GSTR3B=============================#
+def gstr3b(request):
+  return render(request,'company/gstr3B.html')
 
-    
+def gstr9(request):
+  return render(request,'company/gstr9.html')
+
+
