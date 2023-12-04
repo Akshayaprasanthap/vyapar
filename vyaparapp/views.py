@@ -4686,9 +4686,26 @@ def view_party(request,id):
 
 #====================================akshaya GSTR3B=============================#
 def gstr3b(request):
-  return render(request,'company/gstr3B.html')
+  staff_id = request.session['staff_id']
+  staff =  staff_details.objects.get(id=staff_id)
+  allmodules= modules_list.objects.get(company=staff.company,status='New')
+  context = {
+              'staff' : staff,
+              'allmodules':allmodules
+
+          }
+  
+  return render(request,'company/gstr3B.html',context)
 
 def gstr9(request):
-  return render(request,'company/gstr9.html')
+  staff_id = request.session['staff_id']
+  staff =  staff_details.objects.get(id=staff_id)
+  allmodules= modules_list.objects.get(company=staff.company,status='New')
+  context = {
+              'staff' : staff,
+              'allmodules':allmodules
+
+          }
+  return render(request,'company/gstr9.html',context)
 
 
