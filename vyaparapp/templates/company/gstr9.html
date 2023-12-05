@@ -6,6 +6,9 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="https://unpkg.com/htmx.org@1.9.6" integrity="sha384-FhXw7b6AlE/jyjlZH5iHa/tTe9EpJ1Y55RjcgPbjeWMskSxZt1v9qkxLJWNJaGni" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.0/xlsx.full.min.js"></script>
 
 <style>
     .card-body {
@@ -13,13 +16,7 @@
         border-radius: 1vh;
     }
 
-    .scrollable-div {
-        height: auto;
-        /* Set the height of the scrollable div */
-        overflow-y: scroll;
-        /* Enable vertical scrollbar */
-        /* Add other styling as needed */
-    }
+   
 
     #tab_logic {
         margin-left: 10px;
@@ -73,9 +70,6 @@
         color: white;
     }
 
-    ::-webkit-scrollbar {
-        display: none
-    }
 </style>
 
 <div class="body-wrapper scrollable-div">
@@ -84,7 +78,7 @@
         <div class="col-12  p-0 m-0">
             <div class=" bg-light bg-light pb-0 mb-0 p-2" style="height:100%;width:100%">
 
-                <div class="d-flex justify-content-center pt-4">
+                <!-- <div class="d-flex justify-content-center pt-4">
                     <a href="" id="b1" class="btn  text-white"
                         style="margin-right: 10px; background-color: rgb(252, 3, 3,0.7);border-radius: 20px;box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
                         Add Sale <i class="fa fa-plus"></i>
@@ -97,17 +91,21 @@
                         style="border-radius: 20px;border: 1px solid rgb(40, 12, 222);background-color: white;box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
                         Add More <i class="fa fa-plus"></i>
                     </a>
-                </div>
+                </div> -->
 
                 <p></p>
 
-                <div style="overflow-y:auto scroll;">
-                    <form action="#" method="post" enctype="multipart/form-data" novalidate>
+                <div>
+                    <form action="#" method="post" enctype="multipart/form-data" novalidate id="gstr9">
                         {% csrf_token %}
 
                         <div class="row clearfix">
                             <div class="col-md-12 table-responsive-md mt-3">
                                 <form action="" style="background-color: #3B71CA ;">
+                                    <div class="option_btn d-flex align-items-center" style="margin-left: 1130px;">
+                                        <button class="btn btn-sm" type="button" onclick="printSection('print_export_section')" title="PRINT"><span><img width="22px" src="{% static 'assets/printer1.png' %}" alt="PRINT"></span></button>
+                                        <button class="btn btn-sm" type="button" onclick="exportToExcel()" title="EXPORT"><span><img width="22px" src="{% static 'assets/excel2.png' %}" alt="EXPORT"></span></button>
+                                        </div>
                                     <!-- < class="col-md-8"> -->
                                         <div class="row">
                                             <h1 class="h1 text-center pt-3 pb-2"
@@ -116,6 +114,8 @@
                                             </h1>
 
                                         </div>
+                                       
+                                            <div id="print_export_section">
                                         <H4 style="font-weight: bolder;">GSTR9 REPORT</H4>
                                         <table
                                             class="table table-bordered table-secondary table-striped table-hover  mt-3" id="tab_logic">
@@ -212,13 +212,13 @@
 
                                             </tr>
                                             <tr>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
 
                                             </tr>
                                             <thead>
@@ -229,23 +229,23 @@
                                             <tr>
                                                 <td>A</td>
                                                 <td>Supplies made to un-registered persons(B2C)</td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
 
                                             </tr>
                                             <tr>
                                                 <td>B</td>
                                                 <td>Supplies made to registered persons(B2B)</td>
 
-                                                <td></td>
+                                                <td>0</td>
 
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
 
                                             </tr>
                                             <tr>
@@ -253,11 +253,11 @@
                                                 <td>Zero rated supply(Export) on payment of tax(except supplies to SEZs)
                                                 </td>
 
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
 
                                             </tr>
                                             <tr>
@@ -265,11 +265,11 @@
                                                 <td>Supplies to SEZs on payment of tax
                                                 </td>
 
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
 
                                             </tr>
                                             <tr>
@@ -277,11 +277,11 @@
                                                 <td>Deemed Exports
                                                 </td>
 
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
 
                                             </tr>
                                             <tr>
@@ -289,11 +289,11 @@
                                                 <td>Advances on which tax has been paid but invoice has not been issued (not cover under (A) to (E) above)
                                                 </td>
 
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
 
                                             </tr>
                                             <tr>
@@ -301,11 +301,11 @@
                                                 <td>Inward supplies on which tax is to be paid on reverse charge basis
                                                 </td>
 
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
 
                                             </tr>
                                             <tr>
@@ -313,11 +313,11 @@
                                                 <td>Sub-total (A to G above)
                                                 </td>
 
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
 
                                             </tr>
                                             <tr>
@@ -325,11 +325,11 @@
                                                 <td>	Credit Notes issued in respect of transactions specified in (B) to (E) above (-)
                                                 </td>
 
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
 
                                             </tr>
                                             <tr>
@@ -337,11 +337,11 @@
                                                 <td>Debit Notes issued in respect of transactions specified in (B) to (E) above (+)
                                                 </td>
 
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
 
                                             </tr>
                                             <tr>
@@ -349,11 +349,11 @@
                                                 <td>Supplies/tax declared through Amendments(+)
                                                 </td>
 
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
 
                                             </tr>
                                             <tr>
@@ -361,11 +361,11 @@
                                                 <td>Supplies/tax reduced through Amendments(+)
                                                 </td>
 
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
 
                                             </tr>
                                             <tr>
@@ -373,11 +373,11 @@
                                                 <td>Sub-total (I to L above)
                                                 </td>
 
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
 
                                             </tr>
                                             <tr>
@@ -385,11 +385,11 @@
                                                 <td>	Supplies and advances on which tax is to be paid (H+M) above
                                                 </td>
 
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
 
                                             </tr>
                                            <th colspan="9"></th>
@@ -406,11 +406,11 @@
                                             <tr>
                                                 <td>A</td>
                                                 <td>	Zero rated supply (Export) without payment of tax</td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
 
                                             </tr>
                                             <tr>
@@ -419,10 +419,10 @@
 
                                                 <td></td>
 
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
 
                                             </tr>
                                             <tr>
@@ -430,11 +430,11 @@
                                                 <td>Supplies on which tax is to be paid by the recipient on reverse charge basis
                                                 </td>
 
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
 
                                             </tr>
                                             <tr>
@@ -442,11 +442,11 @@
                                                 <td>Exempted
                                                 </td>
 
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
 
                                             </tr>
                                             <tr>
@@ -454,11 +454,11 @@
                                                 <td>Nil Rated
                                                 </td>
 
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
 
                                             </tr>
                                             <tr>
@@ -466,11 +466,11 @@
                                                 <td>Non-GST supply
                                                 </td>
 
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
 
                                             </tr>
                                             <tr>
@@ -478,11 +478,11 @@
                                                 <td>Sub-total (A to F above)
                                                 </td>
 
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
 
                                             </tr>
                                             <tr>
@@ -490,11 +490,11 @@
                                                 <td>Credit Notes issued in respect of transactions specified in A to F above (-)
                                                 </td>
 
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
 
                                             </tr>
                                             <tr>
@@ -502,11 +502,11 @@
                                                 <td>Debit Notes issued in respect of transactions specified in A to F above (+)
                                                 </td>
 
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
 
                                             </tr>
                                             <tr>
@@ -514,11 +514,11 @@
                                                 <td>Supplies declared through Amendments(+)
                                                 </td>
 
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
 
                                             </tr>
                                             <tr>
@@ -526,11 +526,11 @@
                                                 <td>Supplies reduced through Amendments(+)
                                                 </td>
 
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
 
                                             </tr>
                                             <tr>
@@ -538,11 +538,11 @@
                                                 <td>Sub-Total (H to K above)
                                                 </td>
 
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
 
                                             </tr>
                                             <tr>
@@ -550,11 +550,11 @@
                                                 <td>Turnover on which tax is not to be paid (G + L above)
                                                 </td>
 
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
 
                                             </tr>
                                             <tr>
@@ -562,11 +562,11 @@
                                                 <td>Total Turnover (including advances) (4N + 5M - 4G above)</td>
 
 
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
 
                                             </tr>
                                             </tbody>
@@ -596,13 +596,13 @@
                                                 <td>Cess</td>
                                             </tr>
                                             <tr>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
                                             </tr>
                                             <thead>
                                             <tr>
@@ -613,10 +613,10 @@
                                             <tr>
                                                 <td>A</td>
                                                 <td colspan="2" >Total amount of input tax credit availed through FORM GSTR-3B (sum total of Table 4A of FORM GSTR-3B)</td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
                                                 
 
                                             </tr>
@@ -624,40 +624,39 @@
                                                 <td></td>
                                                 <td ></td>
                                                 <td>Inputs</td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                 <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
                                             </tr>
                                             <tr>
                                                 <td>B</td>
                                                 <td>Inward supplies (other than imports and inward supplies liable to reverse charge but includes service received from SEZs)</td>
 
                                                 <td>Capital Goods</td>
-
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
 
                                             </tr>
                                             <tr>
                                                 <td></td>
                                                 <td ></td>
                                                 <td>Input Services</td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
                                             </tr>
                                             <tr>
                                                 <td></td>
                                                 <td ></td>
                                                 <td>Inputs</td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
                                             </tr>
                                             <tr>
                                                 <td>C</td>
@@ -665,29 +664,28 @@
                                                 </td>
 
                                                 <td>Capital Goods</td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
                                             </tr>
                                             <tr>
                                                 <td></td>
                                                 <td ></td>
                                                 <td>Input Services</td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
                                             </tr>
                                             <tr>
                                                 <td></td>
                                                 <td ></td>
                                                 <td>Inputs</td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
                                             </tr>
                                             <tr>
                                                 <td>D</td>
@@ -695,29 +693,29 @@
                                                 </td>
 
                                                 <td>Capital Goods</td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
 
                                             </tr>
                                             <tr>
                                                 <td></td>
                                                 <td ></td>
                                                 <td>Input Services</td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
                                             </tr>
                                             <tr>
                                                 <td></td>
                                                 <td ></td>
                                                 <td>Inputs</td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
                                             </tr>
                                             <tr>
                                                 <td>E</td>
@@ -725,10 +723,10 @@
                                                 </td>
 
                                                 <td>Capital Goods</td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
                                                
 
                                             </tr>
@@ -737,11 +735,10 @@
                                                 <td colspan="2">	Import of services (excluding inward supplies from SEZs)
                                                 </td>
 
-                                               
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
 
                                             </tr>
                                             <tr>
@@ -749,95 +746,86 @@
                                                 <td colspan="2">Input Tax credit received from ISD
                                                 </td>
 
-                                                
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
 
                                             </tr>
                                             <tr>
                                                 <td>H</td>
                                                 <td colspan="2">Amount of ITC reclaimed (other than B above) under the provisons of Act
                                                 </td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
                                             </tr>
                                             <tr>
                                                 <td>I</td>
                                                 <td colspan="2">Sub-total (B to H above)
                                                 </td>
-
-                                          
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
                                             </tr>
                                             <tr>
                                                 <td>J</td>
                                                 <td  colspan="2">Difference (I - A above)
                                                 </td>
 
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
 
                                             </tr>
                                             <tr>
                                                 <td>K</td>
                                                 <td colspan="2">	Transition credit through TRAN-I (including revisions if any)
                                                 </td>
-
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
 
                                             </tr>
                                             <tr>
                                                 <td>L</td>
                                                 <td colspan="2">Transition credit through TRAN-II
                                                 </td>
-
-                                          
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
 
                                             </tr>
                                             <tr>
                                                 <td>M</td>
                                                 <td colspan="2">Any other ITC availed but not specified above
                                                 </td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
 
                                             </tr>
                                             <tr>
                                                 <td>N</td>
                                                 <td colspan="2">	Sub-total (K to M above)</td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
                                             </tr>
                                             <tr>
                                                 <td>O</td>
                                                 <td colspan="2">Total ITC availed (I + N above)</td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
 
                                             </tr>
                                             <th colspan="7"></th>
@@ -851,10 +839,10 @@
                                                 <tr>
                                                     <td>A</td>
                                                     <td  colspan="2">As per Rule 37 </td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
+                                                    <td>0</td>
+                                                    <td>0</td>
+                                                    <td>0</td>
+                                                    <td>0</td>
                                                     
                                                     
     
@@ -863,12 +851,10 @@
                                                 <tr>
                                                     <td>B</td>
                                                     <td  colspan="2">As per Rule 39</td>
-    
-                                                    <td></td>
-    
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
+                                                    <td>0</td>
+                                                    <td>0</td>
+                                                    <td>0</td>
+                                                    <td>0</td>
                                                     
     
                                                 </tr>
@@ -878,12 +864,10 @@
                                                     <td>C</td>
                                                     <td  colspan="2">As per Rule 42
                                                     </td>
-    
-                                                
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
+                                                    <td>0</td>
+                                                    <td>0</td>
+                                                    <td>0</td>
+                                                    <td>0</td>
     
                                                 </tr>
                                                
@@ -891,10 +875,10 @@
                                                     <td>D</td>
                                                     <td  colspan="2">As per Rule 43
                                                     </td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
+                                                    <td>0</td>
+                                                    <td>0</td>
+                                                    <td>0</td>
+                                                    <td>0</td>
     
                                                 </tr>
                                               
@@ -902,10 +886,10 @@
                                                     <td>E</td>
                                                     <td  colspan="2">	As per section 17(5)
                                                     </td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
+                                                    <td>0</td>
+                                                    <td>0</td>
+                                                    <td>0</td>
+                                                    <td>0</td>
                                                    
     
                                                 </tr>
@@ -913,48 +897,48 @@
                                                     <td >F</td>
                                                     <td  colspan="2">Reversal of TRAN-I credit
                                                     </td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
+                                                    <td>0</td>
+                                                    <td>0</td>
+                                                    <td>0</td>
+                                                    <td>0</td>
     
                                                 </tr>
                                                 <tr>
                                                     <td>G</td>
                                                     <td  colspan="2">	Reversal of TRAN-II credit
                                                     </td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
+                                                    <td>0</td>
+                                                    <td>0</td>
+                                                    <td>0</td>
+                                                    <td>0</td>
     
                                                 </tr>
                                                 <tr>
                                                     <td>H</td>
                                                     
                                                     <td  colspan="2">Other reversals (pl. specify)</td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
+                                                    <td>0</td>
+                                                    <td>0</td>
+                                                    <td>0</td>
+                                                    <td>0</td>
     
                                                 </tr>
                                                 <tr>
                                                     <td>I</td>
                                                     <td  colspan="2">Total ITC reversed (A to H above)</td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
+                                                    <td>0</td>
+                                                    <td>0</td>
+                                                    <td>0</td>
+                                                    <td>0</td>
     
                                                 </tr>
                                                 <tr>
                                                     <td>J</td>
                                                     <td  colspan="2">Net ITC Available for Utilization (6O -7I)	</td>  
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
+                                                    <td>0</td>
+                                                    <td>0</td>
+                                                    <td>0</td>
+                                                    <td>0</td>
     
                                                 </tr>
                                                 <th colspan="7"></th>
@@ -968,11 +952,10 @@
                                                 <tr>
                                                     <td>A</td>
                                                     <td  colspan="2">ITC as per GSTR-2A (Table 3 & 5 thereof)</td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    
+                                                    <td>0</td>
+                                                    <td>0</td>
+                                                    <td>0</td>
+                                                    <td>0</td>
                                                     
     
                                                 </tr>
@@ -980,12 +963,10 @@
                                                 <tr>
                                                     <td>B</td>
                                                     <td  colspan="2">ITC as per sum total of 6(B) and 6(H) above</td>
-    
-                                                    <td></td>
-    
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
+                                                    <td>0</td>
+                                                    <td>0</td>
+                                                    <td>0</td>
+                                                    <td>0</td>
                                                     
     
                                                 </tr>
@@ -995,10 +976,10 @@
                                                     <td>C</td>
                                                     <td  colspan="2">ITC on inward supplies (other than imports and inward supplies liable to reverse charge but includes services received from SEZs) received during 2017-18 but availed during April to September, 2018
                                                     </td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
+                                                    <td>0</td>
+                                                    <td>0</td>
+                                                    <td>0</td>
+                                                    <td>0</td>
     
                                                 </tr>
                                                
@@ -1006,10 +987,10 @@
                                                     <td>D</td>
                                                     <td  colspan="2">Difference [A-(B+C)]
                                                     </td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
+                                                    <td>0</td>
+                                                    <td>0</td>
+                                                    <td>0</td>
+                                                    <td>0</td>
     
                                                 </tr>
                                               
@@ -1017,10 +998,10 @@
                                                     <td>E</td>
                                                     <td  colspan="2">	ITC available but not availed (out of D)
                                                     </td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
+                                                    <td>0</td>
+                                                    <td>0</td>
+                                                    <td>0</td>
+                                                    <td>0</td>
                                                    
     
                                                 </tr>
@@ -1028,57 +1009,57 @@
                                                     <td >F</td>
                                                     <td  colspan="2">ITC available but ineligible (out of D)
                                                     </td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
+                                                    <td>0</td>
+                                                    <td>0</td>
+                                                    <td>0</td>
+                                                    <td>0</td>
     
                                                 </tr>
                                                 <tr>
                                                     <td>G</td>
                                                     <td  colspan="2">IGST paid on import of goods (as per 6(E) above)
                                                     </td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
+                                                    <td>0</td>
+                                                    <td>0</td>
+                                                    <td>0</td>
+                                                    <td>0</td>
     
                                                 </tr>
                                                 <tr>
                                                     <td>H</td>
                                                     
                                                     <td  colspan="2">IGST credit availed on import of goods (as per 6(E) above)</td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
+                                                    <td>0</td>
+                                                    <td>0</td>
+                                                    <td>0</td>
+                                                    <td>0</td>
     
                                                 </tr>
                                                 <tr>
                                                     <td>I</td>
                                                     <td  colspan="2">Difference (G -H)</td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
+                                                    <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
     
                                                 </tr>
                                                 <tr>
                                                     <td>J</td>
                                                     <td  colspan="2">ITC available but not availed on import of goods (Equal to I)</td>  
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
+                                                    <td>0</td>
+                                                    <td>0</td>
+                                                    <td>0</td>
+                                                    <td>0</td>
     
                                                 </tr>
                                                 <tr>
                                                     <td>K</td>
                                                     <td  colspan="2">Total ITC to be lapsed in current financial year (E+F+J)</td>  
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
+                                                    <td>0</td>
+                                                    <td>0</td>
+                                                    <td>0</td>
+                                                    <td>0</td>
     
                                                 </tr>
                                                
@@ -1131,75 +1112,75 @@
                                                 </tr>
                                                 <tr>    
                                                     <td>Integrated Tax</td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
+                                                    <td>0</td>
+                                                    <td>0</td>
+                                                    <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
                                                 </tr>
                                                 <tr>    
                                                     <td>Central Tax</td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
+                                                    <td>0</td>
+                                                    <td>0</td>
+                                                    <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
                                                 </tr>
                                                 <tr>    
                                                     <td>State/ UT tax</td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
+                                                    <td>0</td>
+                                                    <td>0</td>
+                                                    <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
                                                 </tr>
                                                 <tr>    
                                                     <td>Cess</td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
+                                                    <td>0</td>
+                                                    <td>0</td>
+                                                    <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
                                                 </tr>
                                                 <tr>    
                                                     <td>Interest</td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
+                                                    <td>0</td>
+                                                    <td>0</td>
+                                                    <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
                                                 </tr>
                                                 <tr>    
                                                     <td>Late fee</td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
+                                                    <td>0</td>
+                                                    <td>0</td>
+                                                    <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
                                                 </tr>
                                                 <tr>    
                                                     <td>Penalty</td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
+                                                    <td>0</td>
+                                                    <td>0</td>
+                                                    <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
                                                 </tr>
                                                 <tr>    
                                                     <td>Other</td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
+                                                    <td>0</td>
+                                                    <td>0</td>
+                                                    <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
+                                                <td>0</td>
                                                 </tr>
 
                                             </tbody>
@@ -1237,38 +1218,39 @@
                                         <tr>
                                             <td>10</td>
                                             <td>Supplies/tax declared through Amendments (+) (net of debit notes)</td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                        <td>0</td>
+                                        <td>0</td>
+                                        
                                         </tr>
                                         <tr>
                                             <td>11</td>
                                             <td>Supplies/tax reduced through Amendments (+) (net of credit notes)</td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                        <td>0</td>
+                                        <td>0</td>
                                         </tr>
                                         <tr>
                                             <td>12</td>
                                             <td>Reversal of ITC availed during previous financial year</td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>	
+                                            <td>0</td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                        <td>0</td>
+                                        <td>0</td>	
                                         </tr>
                                         <tr>
                                             <td>13</td>
                                             <td>ITC availed for the previous financial year</td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>	
+                                            <td>0</td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                        <td>0</td>
+                                        <td>0</td>	
                                         </tr>
                                             </tbody>
                                         </table>
@@ -1300,36 +1282,36 @@
                                         <tr>
                                           
                                             <td>Integrated Tax</td>
-                                            <td></td>
-                                            <td></td>
+                                            <td>0</td>
+                                            <td>0</td>
                                         </tr>
                                          
                                         <tr>
 
                                             <td>Central Tax</td>
-                                            <td></td>
-                                            <td></td>
+                                            <td>0</td>
+                                            <td>0</td>
                                            
                                         </tr>
                                         <tr>
                                            
                                             <td>State/ UT Tax</td>
-                                            <td></td>
-                                            <td></td>
+                                            <td>0</td>
+                                            <td>0</td>
                                            	
                                         </tr>
                                         <tr>
                                          
                                             <td>Cess</td>
-                                            <td></td>
-                                            <td></td>
+                                            <td>0</td>
+                                            <td>0</td>
                                          
                                         </tr>
                                         <tr>
                                          
                                             <td>Interest</td>
-                                            <td></td>
-                                            <td></td>
+                                            <td>0</td>
+                                            <td>0</td>
                                          
                                         </tr>
 
@@ -1379,86 +1361,86 @@
                                             
                                             <td>A</td>
                                             <td>Total Refund claimed</td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                            <td>0</td>
                                         </tr>
                                          
                                         <tr>
                                             
                                             <td>B</td>
                                             <td>Total Refund sanctioned</td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                            <td>0</td>
                                         </tr>
                                         <tr>
                                             
                                             <td>C</td>
                                             <td>Total Refund rejected</td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                            <td>0</td>
                                         </tr>
                                         <tr>
                                             
                                             <td>D</td>
                                             <td>Total Refund pending</td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                            <td>0</td>
                                         </tr>
                                         <tr>
                                             
                                             <td>E</td>
                                             <td>Total demand of taxes</td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                            <td>0</td>
                                         </tr>
                                         <tr>
                                             
                                             <td>F</td>
                                             <td>Total taxes paid in respect of E above</td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                            <td>0</td>
                                         </tr>
                                         <tr>
                                             
                                             <td>G</td>
                                             <td>Total demands pending out of E above</td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                            <td>0</td>
                                         </tr>
 
 
@@ -1498,31 +1480,31 @@
                                         <tr>
                                           <td>A</td>
                                             <td>Supplies received from composition taxpayers</td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                            <td>0</td>
                                         </tr>
                                          
                                         <tr>
                                             <td>B</td>
                                               <td>Deemed supply under section 143</td>
-                                              <td></td>
-                                              <td></td>
-                                              <td></td>
-                                              <td></td>
-                                              <td></td>
+                                              <td>0</td>
+                                              <td>0</td>
+                                              <td>0</td>
+                                              <td>0</td>
+                                              <td>0</td>
                                           </tr>
                                        
                                           <tr>
                                             <td>C</td>
                                               <td>Goods sent on approval basis but not returned</td>
-                                              <td></td>
-                                              <td></td>
-                                              <td></td>
-                                              <td></td>
-                                              <td></td>
+                                              <td>0</td>
+                                              <td>0</td>
+                                              <td>0</td>
+                                              <td>0</td>
+                                              <td>0</td>
                                           </tr>
                                        
 
@@ -1635,15 +1617,15 @@
                                         <tr>
                                             <td>A</td>
                                             <td>Central Tax</td>
-                                            <td></td>
-                                            <td></td>
+                                            <td>0</td>
+                                            <td>0</td>
                                            
                                         </tr>
                                         <tr>
                                            <td>B</td>
                                             <td>State Tax</td>
-                                            <td></td>
-                                            <td></td>
+                                            <td>0</td>
+                                            <td>0</td>
                                            	
                                         </tr>
                                         
@@ -1652,6 +1634,7 @@
 
                                             </tbody>
                                         </table>
+                            </div></div>
 
                                 </form>
                             </div>
@@ -1663,4 +1646,25 @@
 </div>
 </div>
 </div>
+
+<script>
+    function exportToExcel() {
+        const table = document.getElementById('gstr9');
+        const wb = XLSX.utils.table_to_book(table, { sheet: "Sheet1" });
+        XLSX.writeFile(wb, "gstr9.xlsx");
+    }
+
+
+    
+function printSection(sectionId) {
+        var printContents = document.getElementById(sectionId).innerHTML;
+        var originalContents = document.body.innerHTML;
+    
+        document.body.innerHTML = printContents;
+    
+        window.print();
+    
+        document.body.innerHTML = originalContents;
+    }
+    </script>
 {% endblock %}

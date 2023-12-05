@@ -4684,7 +4684,9 @@ def view_party(request,id):
   allmodules= modules_list.objects.get(company=staff.company,status='New')
   return render(request, 'company/view_party.html',{'staff':staff,'allmodules':allmodules,'Party':Party,'getparty':getparty})
 
+
 #====================================akshaya GSTR3B=============================#
+
 def gstr3b(request):
   staff_id = request.session['staff_id']
   staff =  staff_details.objects.get(id=staff_id)
@@ -4707,5 +4709,9 @@ def gstr9(request):
 
           }
   return render(request,'company/gstr9.html',context)
+
+
+
+
 
 
