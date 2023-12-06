@@ -19,7 +19,8 @@ from openpyxl import Workbook
 from num2words import num2words
 from django.template.loader import get_template
 from xhtml2pdf import pisa
-
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
 
 # Create your views here.
 def home(request):
@@ -4709,8 +4710,6 @@ def gstr9(request):
 
           }
   return render(request,'company/gstr9.html',context)
-
-
 
 
 

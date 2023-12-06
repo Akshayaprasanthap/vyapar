@@ -1,5 +1,6 @@
 {% extends 'company/src/html/base.html' %}
 {% block content %}
+{% load social_share %}
 {% load static %}
 
 <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
@@ -9,6 +10,8 @@
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script src="https://unpkg.com/htmx.org@1.9.6" integrity="sha384-FhXw7b6AlE/jyjlZH5iHa/tTe9EpJ1Y55RjcgPbjeWMskSxZt1v9qkxLJWNJaGni" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.0/xlsx.full.min.js"></script>
+<!-- Include html2pdf library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <style>
     .card-body {
@@ -78,22 +81,27 @@
         <div class="col-12  p-0 m-0">
             <div class=" bg-light bg-light pb-0 mb-0 p-2" style="height:100%;width:100%">
                 <div class="d-flex justify-content-center pt-4">
-                    <div class="date" style="margin-right: 900px;">
-                     <!-- ######################           DATE              #################### -->
-                    </div>
                   
-                    <!-- <a href="" id="b1" class="btn  text-white"
-                        style="margin-right: 10px; background-color: rgb(252, 3, 3,0.7);border-radius: 20px;box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
-                        Add Sale <i class="fa fa-plus"></i>
-                    </a>
-                    <a href="{% url 'add_purchasebill' %}" id="b2" class="btn  text-white"
-                        style="margin-right: 10px;background-color: rgba(3, 161, 252, 0.7);border-radius: 20px;box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
-                        Add Purchase <i class="fa fa-plus"></i>
-                    </a>
-                    <a href="" id="b3" class="btn text-primary"
-                        style="border-radius: 20px;border: 1px solid rgb(40, 12, 222);background-color: white;box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
-                        Add More <i class="fa fa-plus"></i>
-                     </a> -->
+                            <div class="filtr_with_date_between d-flex d-inline h-100" style="margin-right: 700px;">
+                                <form action="#" method="get" class="d-flex d-inline" onsubmit="return validateDates()">
+                                                                       <!-- <label for="" class="mx-1 py-1">From Date</label> -->
+                                    <!-- <input type="date" name="from_date" id="from_date_value" class="form-control form-control-sm" required>
+                                    <label for="" class="mx-1 py-1">Todate</label>
+                                    <input type="date" name="to_date" id="to_date_value" class="form-control form-control-sm" required>
+                                    <input type="submit" value="Submit" class="btn btn-sm btn-info ms-1" id="est_date_btwn_filt_sub_btn">  -->
+                                    <label class="mx-1 py-1" for="fromDate">From (Month/Year):</label>
+  <input type="month" id="fromDate" name="fromDate" >
+
+  <label for="toDate">To (Month/Year):</label>
+  <input type="month" id="toDate" name="toDate">
+
+  <input type="submit" value="Submit">
+  
+                                </form>
+                            </div>
+                      
+                  
+                    
                 </div> 
                 <p></p>
 
@@ -103,17 +111,25 @@
 
                     <div class="row clearfix">
                         <div class="col-md-12 table-responsive-md mt-3">
-                            <div class="option_btn d-flex align-items-center" style="margin-left: 1130px;">
+                            <div class="option_btn d-flex align-items-center" style="margin-left: 1000px;">
                                 <button class="btn btn-sm" type="button" onclick="printSection('print_export_section')" title="PRINT"><span><img width="22px" src="{% static 'assets/printer1.png' %}" alt="PRINT"></span></button>
                             <button class="btn btn-sm" type="button" onclick="exportToExcel()" title="EXPORT"><span><img width="22px" src="{% static 'assets/excel2.png' %}" alt="EXPORT"></span></button>
-                            </div>
+                            <button class="btn btn-sm" type="button" onclick="exportToPDF()" title="DOWNLOAD"><span><img width="18px" src="{% static 'images/pdfdownload.png' %}" alt="DOWNLOAD"></span></button>
+                                                    
+                            <button class="btn btn-sm" type="button" onclick="toggleDropdown()" title="SHARE"><span><img width="22px" src="{% static 'images/shareimg.png' %}" alt="SHARE"></span></button>
+                            <div class="dropdown-content" id="myDropdown">
+                                <ul style="margin-bottom: -1px;">{% post_to_whatsapp object_or_url "WhatsApp" %}</ul>
+                                <ul style="margin-bottom: -1px;">{% send_email object.title "{{object.title}}" object_or_url "Email" %}</ul>
+                            </div>     
+                        </div>
+                        <DIV id="pdfdwnld">
                             <div class="row">
                                 <h1 class="h1 text-center pt-3 pb-2" style="text-transform:uppercase; font-family: 'Times New Roman', Times, serif;padding-left: 5px;">
                                     <b>{{staff.company.company_name}}</b></h1>
     
                             </div>
                             
-                        
+                     
                             <div id="print_export_section">
                             <H4 style="font-weight: bolder;">GSTR3B REPORT</H4>
                         <br>    
@@ -355,7 +371,7 @@
                                 </table>
                             </div>
                     </div></form></div>
-                            </form>
+                </DIV> </form>
                         </div>
                     </div>
             </div>
@@ -383,12 +399,28 @@ function printSection(sectionId) {
     
         document.body.innerHTML = originalContents;
     }
-    
-    // function toggleDropdown() {
-    //     var dropdownContent = document.getElementById("myDropdown");
-    //     dropdownContent.style.display = (dropdownContent.style.display === "block") ? "none" : "block";
-    // }
+    function exportToPDF() {
+    var content = document.getElementById('pdfdwnld');
 
+    var opt = {
+        margin: 0.1,
+        filename: 'GSTR3B.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+    };
+
+    html2pdf().set(opt).from(content).save();
+}
+
+
+
+
+
+function toggleDropdown() {
+    var dropdownContent = document.getElementById("myDropdown");
+    dropdownContent.style.display = (dropdownContent.style.display === "block") ? "none" : "block";
+}
 </script>
 
-        {% endblock %}
+{% endblock %}
