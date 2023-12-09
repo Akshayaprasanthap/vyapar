@@ -14,13 +14,38 @@ from django.db.models import Q
 from django.template.response import TemplateResponse
 from django.db.models import F
 from openpyxl import load_workbook
+# from weasyprint import HTML
+
+from django.core.mail import send_mail, EmailMultiAlternatives
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+from django.conf import settings
+from io import BytesIO
+from xhtml2pdf import pisa
+
+
 from django.http.response import JsonResponse, HttpResponse
 from openpyxl import Workbook
 from num2words import num2words
 from django.template.loader import get_template
 from xhtml2pdf import pisa
-from reportlab.lib.pagesizes import letter
-from reportlab.pdfgen import canvas
+from django.http import HttpResponseServerError, JsonResponse
+from django.db.models import Sum
+from django.core.mail import send_mail, EmailMessage,EmailMultiAlternatives
+# from django.conf import settings
+from io import BytesIO
+from django.core.mail import send_mail
+from xhtml2pdf import pisa
+from django.template.loader import get_template
+from django.core.mail import EmailMessage
+from django.core.mail import send_mail
+# from django.conf import settings
+from django.conf import settings as conf_settings
+
+
+
+
+
 
 # Create your views here.
 def home(request):
@@ -4689,6 +4714,7 @@ def view_party(request,id):
 #====================================akshaya GSTR3B=============================#
 
 def gstr3b(request):
+
   staff_id = request.session['staff_id']
   staff =  staff_details.objects.get(id=staff_id)
   allmodules= modules_list.objects.get(company=staff.company,status='New')
@@ -4700,6 +4726,229 @@ def gstr3b(request):
   
   return render(request,'company/gstr3B.html',context)
 
+def gstr3b_pdf(request):
+  return render(request,'company/gstr3B_pdf.html')
+
+
+def gstrdate_filter(request):
+    from_date = request.GET.get('fromDate')
+    to_date = request.GET.get('toDate')
+
+    return render(request, 'gstr3B.html', {'from_date': from_date, 'to_date': to_date})
+
+# def sharegstr3BToEmail(request):
+#     if request.user:
+#         try:
+#             if request.method == 'POST':
+#                 emails_string = request.POST['email_ids']
+
+#                 # Split the string by commas and remove any leading or trailing whitespace
+#                 emails_list = [email.strip() for email in emails_string.split(',')]
+#                 email_message = request.POST['email_message']
+#                 print(emails_list,'11111111')
+#                 sid = request.session.get('staff_id')
+#                 staff =  staff_details.objects.get(id=sid)
+#                 cmp = company.objects.get(id=staff.company.id)
+#                 allmodules= modules_list.objects.get(company=cmp,status='New')
+#                 context = {
+#                 'staff' : staff,
+#                 'allmodules':allmodules
+
+#                 }
+#                 print('0000000000000000000000')
+#                 template_path = 'company/gstr3B_pdf.html'
+#                 print('1111111111111')
+#                 template = get_template(template_path)
+#                 print('22222222222222222222222')
+          
+
+#                 html  = template.render(context)
+#                 print('33333333333333333')
+              
+#                 result = BytesIO()
+#                 print('55555555555555555555555555')
+#                 pdf = pisa.pisaDocument(BytesIO(html.encode("ISO-8859-1")), result)
+#                 if pdf.err:
+#                         raise Exception(f"PDF generation error: {pdf.err}")
+#                 print('666666666666666666666666')
+#                 pdf = result.getvalue()
+#                 print('444444444444444444')
+
+#                 filename = f'gstr3B {staff.company.company_name}.pdf'
+#                 subject = f"Gstr3B Report "
+
+#                 email = EmailMessage(subject, f"Hi,\nPlease find the attached Gstr3B Report -  \n{email_message}\n\n--\nRegards,\n{staff.company.company_name}\n{staff.company.address}\n{staff.company.state} - {staff.company.country}\n{staff.company.contact}", from_email=settings.EMAIL_HOST_USER,to=emails_list)
+#                 email.attach(filename, pdf, "application/pdf")
+#                 email.send(fail_silently=False)
+#                 msg = messages.success(request, 'Report has been shared via email successfully..!')
+#                 print(msg)
+#                 return redirect("gstr3b_pdf")
+#         except Exception as e:
+#             print('rrrrrrrrr')
+#             messages.error(request, f'{e}')
+#             return redirect("gstr3b")
+#     else:
+#           print('else')
+#           return redirect('gstr3b')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+def sharegstr3BToEmail(request):
+    if request.method == "POST":
+        sid = request.session.get('staff_id')
+        staff =  staff_details.objects.get(id=sid)
+        cmp = company.objects.get(id=staff.company.id)
+        allmodules= modules_list.objects.get(company=cmp,status='New')
+        context = {'staff' : staff,'allmodules':allmodules}
+        
+        my_subject = "GSTR 3B REPORT"
+
+
+        recipient_list = ["akshayaprashanth20@gmail.com"]#add ur email
+        html_message = render_to_string('company/gstr3B_pdf.html',context)#add ur html
+        # vyaparapp\templates\index.html
+        # vyaparapp\templates\company\gstr3B_pdf.html
+        plain_message = strip_tags(html_message)
+        pdf_content = BytesIO()
+        pisa_document = pisa.CreatePDF(html_message.encode("UTF-8"), pdf_content)
+        pdf_content.seek(0)
+        # todo: need to update the from_email
+        filename = f'gstr3B {staff.company.company_name}.pdf'
+        message = EmailMultiAlternatives(
+            subject=my_subject,
+            body= f"Hi,\nPlease find the attached Gstr3B Report -  \n\n--\nRegards,\n{staff.company.company_name}\n{staff.company.address}\n{staff.company.state} - {staff.company.country}\n{staff.company.contact}",
+            from_email='altostechnologies6@gmail.com', 
+            to=recipient_list,)
+        message.attach(filename, pdf_content.read(), "application/pdf")
+        message.send()
+        
+        return HttpResponse('<script>alert("Report has been shared via email successfully..!");window.location="/gstr3b"</script>')
+    else:
+        return HttpResponse('<script>alert("Errorrrrrrr!");window.location="/gstr3b"</script>')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# def sharegstr3BToEmail(request):
+#   print('aaaaaaaaaa',conf_settings.EMAIL_HOST_USER)
+#   if request.user:
+#     try:
+#       if request.method == 'POST':
+#         # email=EmailMultiAlternatives(subject="hello",to=["akshayaprashanth20@gmail.com"],body="akshaya",from_email="altostechnologies6@gmail.com")
+#         # email.send(fail_silently=False)
+
+#         # emails_string = request.POST['email_ids']
+
+#         # # Split the string by commas and remove any leading or trailing whitespace
+#         # emails_list = [email.strip() for email in emails_string.split(',')]
+#         # email_message = request.POST['email_message']
+
+#         sid = request.session.get('staff_id')
+#         staff =  staff_details.objects.get(id=sid)
+#         cmp = company.objects.get(id=staff.company.id)
+#         allmodules= modules_list.objects.get(company=cmp,status='New')
+#         context = {'staff' : staff,'allmodules':allmodules}
+#         template_path = 'index.html'
+        
+
+#         # template = get_template('index.html')
+#         # html = template.render(context)
+#         # # result = BytesIO()
+#         # # pdf = bin(pisa.pisaDocument(BytesIO(html.encode("UTF-8")), result))
+#         # pdf=pisa.CreatePDF(html,dest=None)
+#         # pdf = dest.getvalue()
+#         # print(template)
+# # HTML message
+#         html_message = render_to_string("password.html", context)
+#         plain_message = strip_tags(html_message)
+
+# # Convert HTML to PDF using WeasyPrint
+#         pdf_data = HTML(string=html_message).write_pdf()
+
+
+#         filename = 'Invoice.pdf'
+#         to_emails = ['akshayaprashanth20@gmail.com']
+#         subject = "From CliMan"
+#         email = EmailMultiAlternatives(subject, "helloji", from_email=conf_settings.EMAIL_HOST_USER, to=to_emails)
+#         # email.attach_alternative(html, "text/html")  # Attach HTML content
+#         # email.attach(filename, pdf, "application/pdf")  # Attach PDF content
+#         email.send(fail_silently=False)
+       
+
+#         msg = messages.success(request, 'Gstr3b file has been shared via email successfully..!')
+#         return redirect(gstr3b)
+#       else:
+#         print('hi')
+#     except Exception as e:
+#         print(e)
+#         messages.error(request, f'{e}')
+#         return redirect(gstr3b)
+
+
+
+
+
+
+
+# def cmpeml2(request):
+
+#     if request.method == 'POST':
+#         subject = 'LEaRninG SoftsOftWare'
+#         message = 'Dear Candidate,\nWe are pleased to offer you an internship at our company in the Python Developer department at our LEaRninG SoftsOftWare.'
+#         recipient = request.POST.get('email')  # Make sure 'email' corresponds to the name attribute of your input field
+#         try:
+#             send_mail(
+#                 subject,
+#                 message,
+#                 settings.EMAIL_HOST_USER,
+#                 [recipient],
+#                 fail_silently=False  # Set to True to suppress errors (not recommended in production)
+#             )
+#             return HttpResponse("Email sent successfully")  # Return success message
+#         except Exception as e:
+#             return HttpResponseServerError("An error occurred while sending the email")  # Handle exception if sending fails
+#     else:
+#         return HttpResponse("Invalid request method")
+
+
+
+
+
 def gstr9(request):
   staff_id = request.session['staff_id']
   staff =  staff_details.objects.get(id=staff_id)
@@ -4709,7 +4958,49 @@ def gstr9(request):
               'allmodules':allmodules
 
           }
-  return render(request,'company/gstr9.html',context)
+  return render(request,'company/gstr9.html')
+
+
+
+def sharegstr9ToEmail(request):
+   if request.user:
+        try:
+            if request.method == 'POST':
+                emails_string = request.POST['email_ids']
+
+                # Split the string by commas and remove any leading or trailing whitespace
+                emails_list = [email.strip() for email in emails_string.split(',')]
+                email_message = request.POST['email_message']
+                # print(emails_list)
+                sid = request.session.get('staff_id')
+                staff =  staff_details.objects.get(id=sid)
+                cmp = company.objects.get(id=staff.company.id)
+                allmodules= modules_list.objects.get(company=cmp,status='New')
+                context = {
+              'staff' : staff,
+              'allmodules':allmodules
+
+          }
+                template_path = 'company/gstr9_pdf.html'
+                template = get_template(template_path)
+
+                html  = template.render(context)
+                result = BytesIO()
+                pdf = pisa.pisaDocument(BytesIO(html.encode("ISO-8859-1")), result)#, link_callback=fetch_resources)
+                pdf = result.getvalue()
+                filename = f'gstr9 {staff.company.company_name}.pdf'
+                subject = f"Gstr9 Report "
+                email = EmailMessage(subject, f"Hi,\nPlease find the attached Gstr3B Report -  \n{email_message}\n\n--\nRegards,\n{staff.company.company_name}\n{staff.company.address}\n{staff.company.state} - {staff.company.country}\n{staff.company.contact}", from_email=settings.EMAIL_HOST_USER,to=emails_list)
+                email.attach(filename, pdf, "application/pdf")
+                email.send(fail_silently=False)
+
+                msg = messages.success(request, 'Report has been shared via email successfully..!')
+                return redirect(gstr9)
+        except Exception as e:
+            print(e)
+            messages.error(request, f'{e}')
+            return redirect(gstr9)
+
 
 
 

@@ -82,39 +82,11 @@
 
 <div class="body-wrapper scrollable-div">
     <br><br><br>
-
-
-
-
-
-    
     <div class="row p-0 m-0">
         <div class="col-12  p-0 m-0">
             <div class=" bg-light bg-light pb-0 mb-0 p-2" style="height:100%;width:100%">
-                
 
-                <div class="d-flex justify-content-center pt-4">
-                  
-                    <div class="filtr_with_date_between d-flex d-inline h-100" style="margin-right: 1000px;">
-                        <form action="#" method="get" class="d-flex d-inline" onsubmit="return validateDates()">
-                        <label for="financialYearSelect">Financial Year:</label>
-                        <select id="financialYearSelect" name="financialYearSelect" style="border: none;">
-                            <!-- <option value="">Financial Year</option> -->
-                            <!-- Replace the year range with financial years as needed -->
-                            <option value="2022-2023">2020-2021</option>
-                            <option value="2023-2024">2021-2022</option>
-                            <option value="2022-2023">2022-2023</option>
-                            <option value="2023-2024">2023-2024</option>
-                            <option value="2024-2025">2024-2025</option>
-                            <!-- Add more financial years if necessary -->
-                        </select>
-                    <!-- </form> -->
-                    </div>
-              
-          
-            
-        </div> 
-      
+
 
                 <p></p>
 
@@ -122,45 +94,24 @@
                     <div class="container">
 
                         <form action="#" method="post" enctype="multipart/form-data" novalidate id="gstr9">
-                            {% csrf_token %}
+
                             <div class="row clearfix">
                                 <div class="col-md-12 table-responsive-md mt-3">
-                                    <form action="" style="background-color: #3B71CA ;">
-                                        <div class="option_btn d-flex align-items-center" style="margin-left: 970px;">
-                                            <button class="btn btn-sm" type="button"
-                                                onclick="printSection('print_export_section')" title="PRINT"><span><img
-                                                        width="22px" src="{% static 'assets/printer1.png' %}"
-                                                        alt="PRINT"></span></button>
-                                            <button class="btn btn-sm" type="button" onclick="exportToExcel()"
-                                                title="EXPORT"><span><img width="22px"
-                                                        src="{% static 'assets/excel2.png' %}"
-                                                        alt="EXPORT"></span></button>
-                                                        <button class="btn btn-sm" type="button" onclick="exportToPDF()" title="DOWNLOAD"><span><img width="18px" src="{% static 'images/pdfdownload.png' %}" alt="DOWNLOAD"></span></button>
-                                                        <a class="text-dark" data-toggle="dropdown">
-                                                            <button class="btn  " title="Share"><i class="fas fa-share"></i></button>
-                                                        </a>
-                                                        <div class="dropdown-content ">
-                                                            <a class="dropdown-item" data-target="#shareBillEmail"
-                                                                data-toggle="modal">GMAIL</a>
-                                                            <a class="dropdown-item" href="javascript:void(0);"
-                                                                onclick="shareOnWhatsApp()">WhatsApp</a>
-                                                        </div>
-                                        </div>
+                                    <form action="">
+
                                         <!-- < class="col-md-8"> -->
                                         <DIV id="pdfdwnld">
-                                        <div class="row">
-                                            <h1 class="h1 text-center pt-3 pb-2"
-                                                style="text-transform:uppercase; font-family: 'Times New Roman', Times, serif;padding-left: 5px;">
-                                                <b>{{staff.company.company_name}} </b>
-                                            </h1>
+                                            <div class="row">
+                                                <h1 class="h1 text-center pt-3 pb-2"
+                                                    style="text-transform:uppercase; font-family: 'Times New Roman', Times, serif;padding-left: 5px;">
+                                                    <b>{{staff.company.company_name}}</b>
+                                                </h1>
 
-                                        </div>
+                                            </div>
 
-                                
-                                       
 
                                             <div id="print_export_section">
-                                                <H4 style="font-weight: bolder;">GSTR9 REPORT </H4>
+                                                <H4 style="font-weight: bolder;">GSTR9 REPORT</H4>
                                                 <table
                                                     class="table table-bordered table-secondary table-striped table-hover  mt-3"
                                                     id="tab_logic">
@@ -180,7 +131,7 @@
 
 
                                                         </tr>
-                                                   
+                                                       
                                                         <tr>
                                                             <td>2</td>
                                                             <td>GSTIN</td>
@@ -1726,179 +1677,13 @@
 
         </div>
 
-
-
     </div>
 
 
 
-    </div>
+</div>
 </div>
 </form>
 </div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
 
-<div class="modal fade" id="shareBillEmail">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content" style="background: rgb(32, 35, 37);border-radius: 20px;">
-            <div class="modal-header" style="background: rgb(32, 35, 37);">
-                <h5 class="m-3 text-uppercase" id="shareBillEmailLabel">Share Gstr9 Via Email</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                        aria-hidden="true">&times;</span></button>
-            </div>
-            <div class="modal-body" style="background: rgb(32, 35, 37);">
-                <div class="card p-3 m-3">
-
-                    <form action="{% url 'sharegstr9ToEmail' %}" method="post" class="needs-validation"
-                        id="share_to_email_form" autocomplete="off">
-                        {% csrf_token %}
-                        <div class="form-group">
-                            <label for="emailIds">Email IDs</label>
-                            <textarea class="form-control text-dark" name="email_ids" id="emailIds" rows="5"
-                                placeholder="Multiple emails can be added by separating with a comma(,)."
-                                required></textarea>
-                        </div>
-                        <div class="form-group mt-2">
-                            <label for="item_unitname">Message(optional)</label>
-                            <textarea name="email_message" id="email_message" class="text-dark form-control"
-                                cols="" rows="4"
-                                placeholder="This message will be sent along with Bill details."></textarea>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer d-flex justify-content-center" style="border-top: 1px solid #ffff;">
-                    <input type="submit" id="share_with_email"
-                        class="submitShareEmailBtn rounded-pill text-grey w-50 my-4 mx-3" value="SEND MAIL">
-                </div>
-            </div>
-
-        </div>
-    </div>
-</div>
-<script src="https://code.jquery.com/jquery-3.x.x.min.js"></script>
-
-
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
-    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-    crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
-    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-    crossorigin="anonymous"></script>
-    
-
-
-<script>
-
-    
-
-$(document).ready(function () {
-            $('#share_with_email').on('click', function () {
-                var emailsInput = document.getElementById('emailIds');
-                var emailsString = emailsInput.value.trim();
-
-                var emails = emailsString.split(',').map(function (email) {
-                    return email.trim();
-                });
-
-                var emailRegex = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
-
-                var invalidEmails = []
-                if (emailsString == "") {
-                    alert('Enter valid email addresses..')
-                }
-                else {
-                    for (var i = 0; i < emails.length; i++) {
-                        var currentEmail = emails[i];
-
-                        if (currentEmail != "" && !emailRegex.test(currentEmail)) {
-                            console.log(currentEmail + ' is invalid!');
-                            invalidEmails.push(currentEmail)
-                        }
-                    }
-
-                    if (invalidEmails.length > 0) {
-                        alert('Invalid emails..Please check!\n' + invalidEmails)
-                        // alert(invalidEmails)
-                    } else {
-                        $('#share_to_email_form').submit();
-                    }
-                }
-            })
-        });
-
-
-        function shareOnWhatsApp() {
-            var url = window.location.href;
-            var text = url;
-            text = encodeURIComponent(text);
-            var whatsappUrl = "whatsapp://send?text=" + text;
-            window.location.href = whatsappUrl;
-        }
-
-document.getElementById('financialYearSelect').addEventListener('change', function() {
-            var selectedFinancialYear = this.value;
-            if (selectedFinancialYear) {
-                // You can perform actions based on the selected financial year
-                console.log('Selected Financial Year:', selectedFinancialYear);
-                // For example, you might want to redirect to a specific URL or perform other operations
-            }
-        });
-
-
-
-    function exportToExcel() {
-        const table = document.getElementById('gstr9');
-        const wb = XLSX.utils.table_to_book(table, { sheet: "Sheet1" });
-        XLSX.writeFile(wb, "gstr9.xlsx");
-    }
-
-
-
-    function printSection(sectionId) {
-        var printContents = document.getElementById(sectionId).innerHTML;
-        var originalContents = document.body.innerHTML;
-
-        document.body.innerHTML = printContents;
-
-        window.print();
-
-        document.body.innerHTML = originalContents;
-    }
-    function exportToPDF() {
-    var content = document.getElementById('pdfdwnld');
-
-    var opt = {
-        margin: 0.1,
-        filename: 'GSTR9.pdf',
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2 },
-        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-    };
-
-    html2pdf().set(opt).from(content).save();
-}
-
-
-
-
-
-// function toggleDropdown() {
-//     var dropdownContent = document.getElementById("myDropdown");
-//     dropdownContent.style.display = (dropdownContent.style.display === "block") ? "none" : "block";
-// }
-
-</script>
 {% endblock %}
