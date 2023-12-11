@@ -14,6 +14,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.0/xlsx.full.min.js"></script>
 <!-- Include html2pdf library -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+  <script src="https://unpkg.com/htmx.org@1.9.6" integrity="sha384-FhXw7b6AlE/jyjlZH5iHa/tTe9EpJ1Y55RjcgPbjeWMskSxZt1v9qkxLJWNJaGni" crossorigin="anonymous"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 <style>
     .modal {
@@ -95,7 +99,7 @@
             <div class=" bg-light bg-light pb-0 mb-0 p-2" style="height:100%;width:100%;">
                 <div class="d-flex justify-content-center pt-4">
                   
-                    <div class="filtr_with_date_between d-flex d-inline h-100" style="margin-right: 700px;">
+                    <div class="filtr_with_date_between d-flex d-inline h-100" style="margin-right: 630px;">
                         <form action="#" method="get" class="d-flex d-inline" onsubmit="return validateDates()">
                     
 
@@ -104,11 +108,11 @@
 
                                 <label class="mx-1 py-1" for="fromDate">From(Month/Year):</label>
                                 <input type="month" id="fromDate" name="fromDate"
-                                    style="width: 100px; border-radius: 10px; background-color: rgba(246,249,252,255);">
+                                    style="border: none; background-color: rgba(246,249,252,255);">
                                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                 <label for="toDate">To(Month/Year):</label>
                                 <input type="month" id="toDate" name="toDate"
-                                    style="width: 100px; border-radius: 10px; background-color: rgba(246,249,252,255);">
+                                    style="border: none; background-color: rgba(246,249,252,255);">
                                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                               
 <button class="btn btn-sm btn-outline-dark" onclick="filterData()">Filter</button>
@@ -126,12 +130,12 @@
                 <div>
                     <div class="container">
 
-                        <form action="#" method="post" enctype="multipart/form-data" novalidate id="gstr9">
+                        <form action="#" method="post" enctype="multipart/form-data" novalidate id="gstr3b">
                             {% csrf_token %}
                             <div class="row clearfix">
                                 <div class="col-md-12 table-responsive-md mt-3">
                                     <form action="" style="background-color: #3B71CA ;">
-                                        <div class="option_btn d-flex align-items-center" style="margin-left: 970px;">
+                                        <div class="option_btn d-flex align-items-center" style="margin-left: 1050px;">
                                             <button class="btn btn-sm" type="button"
                                                 onclick="printSection('print_export_section')" title="PRINT"><span><img
                                                         width="22px" src="{% static 'assets/printer1.png' %}"
@@ -141,15 +145,17 @@
                                                         src="{% static 'assets/excel2.png' %}"
                                                         alt="EXPORT"></span></button>
                                                         <button class="btn btn-sm" type="button" onclick="exportToPDF()" title="DOWNLOAD"><span><img width="18px" src="{% static 'images/pdfdownload.png' %}" alt="DOWNLOAD"></span></button>
+                                                        
                                                         <a class="text-dark" data-toggle="dropdown">
                                                             <button class="btn  " title="Share"><i class="fas fa-share"></i></button>
                                                         </a>
-                                                        <div class="dropdown-content ">
+                                                        <div class="dropdown-menu ">
                                                             <a class="dropdown-item" data-target="#shareBillEmail"
                                                                 data-toggle="modal">GMAIL</a>
                                                             <a class="dropdown-item" href="javascript:void(0);"
                                                                 onclick="shareOnWhatsApp()">WhatsApp</a>
                                                         </div>
+                                                 
                                         </div>
                                         <!-- < class="col-md-8"> -->
                                         <DIV id="pdfdwnld">
@@ -452,6 +458,7 @@
                                 </div>
                             </div>
                         </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -462,8 +469,7 @@
             <div class="modal-content" style="background: rgb(136, 160, 175);border-radius: 20px;">
                 <div class="modal-header" style="background: rgb(136, 160, 175);">
                     <h5 class="m-3 text-uppercase" id="shareBillEmailLabel">Share Gstr3B Via Email</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                            aria-hidden="true">&times;</span></button>
+                    <button type="button" class="btn btn-close" data-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body" style="background: rgb(136, 160, 175);">
                     <div class="card p-3 m-3">
@@ -473,8 +479,8 @@
                             {% csrf_token %}
                             <div class="form-group">
                                 <label for="emailIds">Email IDs</label>
-                                <textarea class="form-control text-dark" default-value="akshayaprashanth20@gmail.com" name="email_ids" id="emailIds" rows="5"
-                                    placeholder="Multiple emails can be added by separating with a comma(,)."
+                                <textarea class="form-control text-dark" name="email_ids" id="emailIds" rows="5"
+                                 placeholder="Multiple emails can be added by separating with a comma(,)."
                                     required></textarea>
                             </div>
                             <div class="form-group mt-2">
@@ -485,9 +491,10 @@
                             </div>
                             <div class="modal-footer d-flex justify-content-center"
                                 style="border-top: 1px solid #ffff;">
-                                <input type="submit" id="share_with_email"
-                                    class="submitShareEmailBtn rounded-pill text-grey w-50 my-4 mx-3"
-                                    value="SEND MAIL">
+                                <button type="submit" id="share_with_email"
+                                class=" btn btn-outline-dark  submitShareEmailBtn "
+                                value="SEND MAIL">SEND MAIL</button>
+                               
                             </div>
                         </form>
                     </div>
@@ -591,7 +598,7 @@ function filterData() {
 
 
         function exportToExcel() {
-            const table = document.getElementById('gstr3b');
+            const table = document.getElementById('pdfdwnld');
             const wb = XLSX.utils.table_to_book(table, { sheet: "Sheet1" });
             XLSX.writeFile(wb, "gstr3B.xlsx");
         }

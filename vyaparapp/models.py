@@ -340,9 +340,3 @@ class DeliveryChallanTransactionHistory(models.Model):
     
 # ==================================shemeem --end =======================================
 
-
-class Gstr3B(models.Model):
-    staff = models.ForeignKey(staff_details,on_delete=models.CASCADE,blank=True,null=True)
-    company = models.ForeignKey(company,on_delete=models.CASCADE,blank=True,null=True)
-    user = models.ForeignKey(User,on_delete=models.CASCADE,blank=True,null=True)
-    date = models.DateField(auto_now_add=True,auto_now=False,null=True)

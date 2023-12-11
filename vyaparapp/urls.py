@@ -211,16 +211,13 @@ urlpatterns = [
 
     # ===================================== shemeem - end ==================================================
 
-    # =====================================gstr 3B AKSHAYA ===============================================================
+    # =====================================gstr-3B gstr9 AKSHAYA ===============================================================
     
     path('gstr3b',views.gstr3b, name='gstr3b'),
-    path('gstr3b_pdf',views.gstr3b_pdf, name='gstr3b_pdf'),
-    path('gstrdate_filter',views.gstrdate_filter, name='gstrdate_filter'),
     path('sharegstr3BToEmail',views.sharegstr3BToEmail, name='sharegstr3BToEmail'),
-    
     path('gstr9',views.gstr9, name='gstr9'),
- 
     path('sharegstr9ToEmail',views.sharegstr9ToEmail, name='sharegstr9ToEmail'),
+
     re_path(r'^static/(?P<path>.*)$', serve,{'document_root': settings.STATIC_ROOT}),
     
     
